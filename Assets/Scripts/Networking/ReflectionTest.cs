@@ -8,6 +8,7 @@ public class ReflectionTest : MonoBehaviour
     public List<MethodInfo> methodInfos;
     public List<string> clientMethods;
     public List<string> serverMethods;
+
     void Start()
     {
         methodInfos = new List<MethodInfo>();
