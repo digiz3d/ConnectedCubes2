@@ -1,54 +1,68 @@
 ﻿using UnityEngine;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 
-public class NetworkManager : MonoBehaviour
+namespace StupidNetworking
 {
-    public bool IsClient { get; set; }
-    public bool IsServer { get; set; }
-
-    public static NetworkManager Singleton { get; set; }
-
-    private void OnEnable()
+    public class NetworkManager : MonoBehaviour
     {
-        if (Singleton != null && Singleton != this)
+        public bool IsClient { get; set; }
+        public bool IsServer { get; set; }
+
+        public static NetworkManager Singleton { get; set; }
+
+        private Server server;
+
+        private void OnEnable()
         {
-            Destroy(gameObject);
+            if (Singleton != null && Singleton != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Singleton = this;
+                DontDestroyOnLoad(gameObject);
+                Application.runInBackground = true;
+            }
         }
-        else
+
+        private void OnDestroy()
         {
-            Singleton = this;
-            DontDestroyOnLoad(gameObject);
-            Application.runInBackground = true;
+            if (Singleton != null && Singleton == this)
+            {
+                Singleton = null;
+            }
         }
-    }
 
-    private void OnDestroy()
-    {
-        if (Singleton != null && Singleton == this)
+
+        public void StartServer()
         {
-            Singleton = null;
+            if (IsClient || IsServer) return;
+
+            IsServer = true;
+            server = new Server(27015);
         }
-    }
 
+        public void StopServer()
+        {
+            if (!IsServer) return;
+            IsServer = false;
 
-    public void StartServer()
-    {
-        if (IsServer) return;
-    }
+            server.Stop();
+        }
 
-    public void StopServer()
-    {
-        if (!IsServer) return;
-        IsServer = false;
-    }
+        public void ConnectToServer()
+        {
+            if (IsClient || IsServer) return;
 
-    public void ConnectToServer()
-    {
-        if (IsClient) return;
-    }
+        }
 
-    public void DisconnectFromServer()
-    {
-        if (!IsClient) return;
-        IsClient = false;
+        public void DisconnectFromServer()
+        {
+            if (!IsClient) return;
+            IsClient = false;
+        }
     }
 }

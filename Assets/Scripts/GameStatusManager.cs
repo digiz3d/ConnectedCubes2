@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using StupidNetworking;
 
 public class GameStatusManager : MonoBehaviour
 {
     public Text textServer;
     public Text textClient;
     public Text textHost;
+
     // Update is called once per frame
     private void Update()
     {
@@ -20,8 +22,8 @@ public class GameStatusManager : MonoBehaviour
         if (n == null) return;
 
         textServer.text = "IsServer = " + (n.IsServer);
-        textClient.text = "IsClient =" + (n.IsClient);
-        textHost.text = "IsHost =" + (n.IsServer && n.IsClient);
+        textClient.text = "IsClient = " + (n.IsClient);
+        textHost.text = "IsHost = " + (n.IsServer && n.IsClient);
     }
 
     private void ToggleServer()
@@ -46,7 +48,7 @@ public class GameStatusManager : MonoBehaviour
 
         if (n == null) return;
 
-        if(n.IsClient)
+        if (n.IsClient)
         {
             n.DisconnectFromServer();
         }
