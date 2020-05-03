@@ -5,16 +5,16 @@ namespace StupidNetworking
 {
     public class NetworkManager : MonoBehaviour
     {
-        public bool IsClient { get; set; }
-        public bool IsServer { get; set; }
+        public bool IsClient { get; internal set; }
+        public bool IsServer { get; internal set; }
 
-        public static NetworkManager Singleton { get; set; }
+        public static NetworkManager Singleton { get; internal set; }
 
         private Server server;
         private Client client;
 
         private Queue<NetworkMessage> networkReceivedMessages = new Queue<NetworkMessage>();
-
+        
         private void Update()
         {
             while (networkReceivedMessages.Count > 0)
@@ -47,7 +47,7 @@ namespace StupidNetworking
 
         private void HandleNetworkMessages(NetworkMessage message)
         {
-
+            Debug.Log(message.Data.ToString());
         }
 
         public void StartServer()

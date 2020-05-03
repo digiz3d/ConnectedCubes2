@@ -6,14 +6,14 @@ namespace StupidNetworking
 {
     public class ServerClient
     {
-        private byte id;
-        private TcpClient tcp;
+        public byte Id { get; internal set; }
+        public TcpClient Tcp {get; internal set;}
         public NetworkStream NetworkStream { get; internal set; }
 
         public ServerClient(byte id, TcpClient tcp)
         {
-            this.id = id;
-            this.tcp = tcp;
+            this.Id = id;
+            this.Tcp = tcp;
             NetworkStream = tcp.GetStream();
         }
     }

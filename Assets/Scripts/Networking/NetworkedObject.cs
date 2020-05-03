@@ -6,6 +6,8 @@ namespace StupidNetworking
 {
     public class NetworkedObject : MonoBehaviour
     {
+        public ulong ObjectId { get; internal set; }
+
         // Start is called before the first frame update
         void Start()
         {

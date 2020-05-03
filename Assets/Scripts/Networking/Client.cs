@@ -31,7 +31,7 @@ namespace StupidNetworking
                 {
                     if (stream.CanRead && stream.DataAvailable)
                     {
-                        NetworkMessage message = NetworkMessage.Create(stream);
+                        NetworkMessage message = NetworkMessage.ReadFrom(stream);
                     }
 
                     Debug.Log("[Client Thread] I'm alive !");

@@ -42,12 +42,22 @@ namespace StupidNetworking
                         }
                     }
 
+                    serverClientsList.RemoveAll(client => client == null);
+
                     serverClientsList.ForEach(client =>
                     {
                         NetworkStream stream = client.NetworkStream;
                         if (stream.CanRead && stream.DataAvailable)
                         {
-                            NetworkMessage message = NetworkMessage.Create(stream);
+                            NetworkMessage message = NetworkMessage.ReadFrom(stream);
+                            if (message.SenderClientId != client.Id)
+                            {
+                                Debug.Log("A client sent a message as someone else.");
+                                stream.Close();
+                                client.Tcp.Close();
+                                client.Tcp.Dispose();
+                                client = null;
+                            }
                         }
                     });
 
