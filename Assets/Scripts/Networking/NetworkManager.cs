@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
+using System.Collections.Generic;
 
 namespace StupidNetworking
 {
@@ -13,6 +11,17 @@ namespace StupidNetworking
         public static NetworkManager Singleton { get; set; }
 
         private Server server;
+        private Client client;
+
+        private Queue<NetworkMessage> networkReceivedMessages = new Queue<NetworkMessage>();
+
+        private void Update()
+        {
+            while (networkReceivedMessages.Count > 0)
+            {
+                HandleNetworkMessages(networkReceivedMessages.Dequeue());
+            }
+        }
 
         private void OnEnable()
         {
@@ -36,12 +45,16 @@ namespace StupidNetworking
             }
         }
 
+        private void HandleNetworkMessages(NetworkMessage message)
+        {
+
+        }
 
         public void StartServer()
         {
             if (IsClient || IsServer) return;
-
             IsServer = true;
+
             server = new Server(27015);
         }
 
@@ -55,14 +68,18 @@ namespace StupidNetworking
 
         public void ConnectToServer()
         {
-            if (IsClient || IsServer) return;
+            if (IsClient) return;
+            IsClient = true;
 
+            client = new Client("127.0.0.1", 27015);
         }
 
         public void DisconnectFromServer()
         {
             if (!IsClient) return;
             IsClient = false;
+
+            client.Stop();
         }
     }
 }

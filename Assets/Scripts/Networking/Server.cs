@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -10,32 +9,32 @@ namespace StupidNetworking
 {
     public class Server
     {
-        private List<ServerClient> serverClientsList;
+        private List<ServerClient> serverClientsList = new List<ServerClient>();
 
         private Thread _serverThread;
-        private bool _stoping = false;
+        private bool _stopping = false;
 
         public Server(int port)
         {
-            serverClientsList = new List<ServerClient>();
-
             _serverThread = new Thread(() =>
             {
-                _stoping = false;
+                _stopping = false;
                 Debug.Log("[Server Thread] Hi.");
 
-                TcpListener listener = TcpListener.Create(port);
+                TcpListener listener = new TcpListener(IPAddress.Any, port);
 
-                while (!_stoping)
+                listener.Start();
+
+                while (!_stopping)
                 {
                     while (listener.Pending())
                     {
                         Debug.Log("[Server Thread] Accepting new client.");
-                        TcpClient tcpClient = listener.AcceptTcpClient();
+                        TcpClient tcpListener = listener.AcceptTcpClient();
                         try
                         {
                             byte newClientId = ClientIdsManager.CreateId();
-                            serverClientsList.Add(new ServerClient(newClientId, tcpClient));
+                            serverClientsList.Add(new ServerClient(newClientId, tcpListener));
                         }
                         catch (Exception e)
                         {
@@ -43,22 +42,24 @@ namespace StupidNetworking
                         }
                     }
 
-                    foreach(ServerClient client in serverClientsList)
+                    serverClientsList.ForEach(client =>
                     {
-                        // TODO
-                    }
+                        NetworkStream stream = client.NetworkStream;
+                        if (stream.CanRead && stream.DataAvailable)
+                        {
+                            NetworkMessage message = NetworkMessage.Create(stream);
+                        }
+                    });
 
                     Debug.Log("[Server Thread] I'm alive !");
                     Thread.Sleep(1000);
                 }
 
                 listener.Stop();
-                _stoping = false;
-
+                _stopping = false;
             })
             {
                 IsBackground = true,
-                Priority = System.Threading.ThreadPriority.Highest
             };
 
             _serverThread.Start();
@@ -66,7 +67,10 @@ namespace StupidNetworking
 
         public void Stop()
         {
-            _stoping = true;
+            _stopping = true;
+            _serverThread.Join();
+            _serverThread = null;
+            serverClientsList.Clear();
         }
     }
 }

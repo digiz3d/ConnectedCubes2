@@ -8,6 +8,16 @@ public class GameStatusManager : MonoBehaviour
     public Text textClient;
     public Text textHost;
 
+    private void Awake()
+    {
+        Application.targetFrameRate = 10;
+    }
+
+    private void Start()
+    {
+        Application.targetFrameRate = 10;
+    }
+
     // Update is called once per frame
     private void Update()
     {
@@ -22,8 +32,11 @@ public class GameStatusManager : MonoBehaviour
         if (n == null) return;
 
         textServer.text = "IsServer = " + (n.IsServer);
+        textServer.color = n.IsServer ? Color.green : Color.red;
         textClient.text = "IsClient = " + (n.IsClient);
+        textClient.color = n.IsClient ? Color.green : Color.red;
         textHost.text = "IsHost = " + (n.IsServer && n.IsClient);
+        textHost.color = (n.IsServer && n.IsClient) ? Color.green : Color.red;
     }
 
     private void ToggleServer()
