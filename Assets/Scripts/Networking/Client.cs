@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Net.Sockets;
 using System.Threading;
+using System;
+
 namespace StupidNetworking
 {
     public class Client
@@ -31,7 +33,9 @@ namespace StupidNetworking
                 {
                     if (stream.CanRead && stream.DataAvailable)
                     {
+                        Debug.Log("client can read");
                         NetworkMessage message = NetworkMessage.ReadFrom(stream);
+                        NetworkManager.Singleton.networkReceivedMessages.Enqueue(message);
                     }
 
                     Debug.Log("[Client Thread] I'm alive !");
