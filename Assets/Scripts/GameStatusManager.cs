@@ -8,15 +8,15 @@ public class GameStatusManager : MonoBehaviour
     public Text textClient;
     public Text textHost;
 
-    private void Awake()
-    {
-        Application.targetFrameRate = 10;
-    }
+    //private void Awake()
+    //{
+    //    Application.targetFrameRate = 10;
+    //}
 
-    private void Start()
-    {
-        Application.targetFrameRate = 10;
-    }
+    //private void Start()
+    //{
+    //    Application.targetFrameRate = 10;
+    //}
 
     // Update is called once per frame
     private void Update()
